@@ -10,7 +10,10 @@ module Groupdate
       define_method :"group_by_#{field}" do |*args|
         args = args.dup
         options = args[-1].is_a?(Hash) ? args.pop : {}
-        column = connection.quote_table_name(args[0])
+        column = args[0]
+        unless column.include?('(')
+          column = connection.quote_table_name(args[0])
+        end
         time_zone = args[1] || Time.zone || "Etc/UTC"
         if time_zone.is_a?(ActiveSupport::TimeZone) or time_zone = ActiveSupport::TimeZone[time_zone]
           time_zone = time_zone.tzinfo.name
